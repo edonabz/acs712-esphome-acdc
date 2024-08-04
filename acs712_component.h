@@ -2,13 +2,16 @@
 
 class ACS712Sensor : public PollingComponent {
    public:
-    ACS712 *ACS = new ACS712(A0, 3.3, 1023, 66);
+    float mVperAmpere;
     Sensor *current_sensor = new Sensor();
     Sensor *power_sensor = new Sensor();
 
-    ACS712Sensor() : PollingComponent(15000) {}
+    ACS712Sensor(float vPmA) : PollingComponent(15000) {
+       vPmA = mVperAmpere;
+    }
 
     void setup() override {
+        ACS712 *ACS = new ACS712(A0, 3.3, 1023, mVperAmpere);
         ACS->autoMidPoint();
         ESP_LOGD("acs712", "MidPoint: %d", ACS->getMidPoint());
         ACS->setNoisemV(43);
